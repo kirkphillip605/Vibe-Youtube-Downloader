@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import {
   Container, Header, Sidebar, Content,
   Navbar, Nav, Sidenav,
-  InputGroup, Input, SelectPicker, Badge, Stack, IconButton, Button,
+  InputGroup, Input, SelectPicker, Badge, Stack, IconButton, Button, Modal
 } from 'rsuite';
 import DashboardIcon from '@rsuite/icons/Dashboard';
 import SearchIcon from '@rsuite/icons/Search';
@@ -31,6 +31,7 @@ export default function App() {
   const [downloads, setDownloads] = useState<ActiveDownload[]>([]);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [urlModalOpen, setUrlModalOpen] = useState(false);
+  const [setupModalOpen, setSetupModalOpen] = useState(false);
 
   // Search state (lifted from SearchTab)
   const [query, setQuery] = useState('');
@@ -50,10 +51,25 @@ export default function App() {
     };
 
     window.electron.ipcRenderer.on('download-progress', handler);
+    
+    // Check if download path is configured
+    window.electron.ipcRenderer.invoke('get-settings').then((settings: any) => {
+      if (!settings.downloadPath) {
+        setSetupModalOpen(true);
+      }
+    });
+
     return () => {
       window.electron.ipcRenderer.removeAllListeners('download-progress');
     };
   }, []);
+
+  const handleSelectSetupDirectory = async () => {
+    const selected = await window.electron.ipcRenderer.invoke('select-directory');
+    if (selected) {
+      setSetupModalOpen(false);
+    }
+  };
 
   const handleAddDownload = useCallback((dl: ActiveDownload) => {
     setDownloads(prev => [dl, ...prev]);
@@ -234,6 +250,21 @@ export default function App() {
         downloads={downloads}
         onDismiss={handleDismiss}
       />
+
+      {/* ── First-Launch Setup Modal ───────────────────────────── */}
+      <Modal backdrop="static" keyboard={false} open={setupModalOpen} onClose={() => {}}>
+        <Modal.Header closeButton={false}>
+          <Modal.Title>Welcome to Vibe YT Karaoke Tool</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p>Before you get started, please select a folder where your karaoke videos will be saved.</p>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button appearance="primary" onClick={handleSelectSetupDirectory}>
+            Select Download Folder
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </Container>
   );
 }

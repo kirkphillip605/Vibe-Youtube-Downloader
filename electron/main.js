@@ -6,6 +6,7 @@ import { spawn } from 'child_process';
 import fs from 'fs';
 import { randomUUID } from 'crypto';
 import Datastore from 'nedb-promises';
+import { autoUpdater } from 'electron-updater';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -58,9 +59,7 @@ const settingsDb = Datastore.create({ filename: settingsPath, autoload: true });
 // Initialize default settings
 async function initSettings() {
   const downloadPath = await settingsDb.findOne({ key: 'download_path' });
-  if (!downloadPath) {
-    await settingsDb.insert({ key: 'download_path', value: app.getPath('downloads') });
-  }
+  // Do not automatically set a default path so the frontend can prompt the user on first launch
 }
 
 initSettings();
@@ -124,7 +123,25 @@ function createWindow() {
   });
 }
 
-app.whenReady().then(createWindow);
+app.whenReady().then(() => {
+  createWindow();
+  
+  // Auto Updater logic
+  autoUpdater.checkForUpdatesAndNotify();
+  
+  autoUpdater.on('update-available', (info) => {
+    mainWindow?.webContents.send('update-available', info);
+  });
+  
+  autoUpdater.on('update-downloaded', (info) => {
+    mainWindow?.webContents.send('update-downloaded', info);
+    // Optionally trigger a notification
+    new Notification({
+      title: 'Update Ready',
+      body: `Version ${info.version} is ready to be installed.`
+    }).show();
+  });
+});
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
