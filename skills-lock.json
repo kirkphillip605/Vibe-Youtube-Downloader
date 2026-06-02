@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "rsuite": {
+      "source": "rsuite/rsuite",
+      "sourceType": "github",
+      "skillPath": "skills/rsuite/SKILL.md",
+      "computedHash": "ae27874b780eb9025f6076118d9d05d83466206fff07adaa115b7e8a8ad0122c"
+    }
+  }
+}

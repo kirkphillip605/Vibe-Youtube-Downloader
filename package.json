@@ -1,0 +1,89 @@
+{
+  "name": "vibe-yt-karaoke-tool",
+  "productName": "Vibe YT Karaoke Tool",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Professional YouTube Karaoke Downloader and Management Tool",
+  "author": "KirkNetworks, LLC",
+  "type": "module",
+  "main": ".vite/build/main.cjs",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "start": "electron-forge start",
+    "package": "electron-forge package",
+    "make": "electron-forge make",
+    "build:binaries": "node scripts/download-binaries.js",
+    "electron:dev": "electron-forge start",
+    "electron:build": "electron-forge make",
+    "electron:build:all": "electron-forge make",
+    "postinstall": "npm run build:binaries"
+  },
+  "dependencies": {
+    "@rsuite/icons": "^1.4.0",
+    "ffbinaries": "^1.1.6",
+    "lucide-react": "^0.344.0",
+    "nedb-promises": "^6.2.3",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "rsuite": "^6.1.3"
+  },
+  "devDependencies": {
+    "@electron-forge/cli": "^7.11.1",
+    "@electron-forge/maker-deb": "^7.11.1",
+    "@electron-forge/maker-dmg": "^7.11.1",
+    "@electron-forge/maker-rpm": "^7.11.1",
+    "@electron-forge/maker-squirrel": "^7.11.1",
+    "@electron-forge/maker-zip": "^7.11.1",
+    "@electron-forge/plugin-auto-unpack-natives": "^7.11.1",
+    "@electron-forge/plugin-fuses": "^7.11.1",
+    "@electron-forge/plugin-vite": "^7.11.1",
+    "@electron/rebuild": "^4.0.4",
+    "@types/react": "^18.2.56",
+    "@types/react-dom": "^18.2.19",
+    "@vitejs/plugin-react": "^4.2.1",
+    "autoprefixer": "^10.4.17",
+    "concurrently": "^9.2.1",
+    "electron": "^30.0.0",
+    "electron-builder": "^26.8.1",
+    "electron-is-dev": "^3.0.1",
+    "electron-rebuild": "^3.2.9",
+    "postcss": "^8.4.35",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5.2.2",
+    "vite": "^5.1.4",
+    "wait-on": "^9.0.10"
+  },
+  "build": {
+    "appId": "com.kirknetworks.vibe",
+    "productName": "Vibe YT Karaoke Tool",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "electron/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": "public/icon.ico"
+    },
+    "mac": {
+      "target": [
+        "dmg"
+      ],
+      "icon": "public/icon.icns"
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ]
+    },
+    "asar": true
+  }
+}
