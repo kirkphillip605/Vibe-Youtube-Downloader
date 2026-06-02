@@ -95,7 +95,8 @@
     },
     "mac": {
       "target": [
-        "dmg"
+        "dmg",
+        "zip"
       ],
       "icon": "public/icon.icns",
       "identity": null
