@@ -105,6 +105,7 @@ function createWindow() {
     },
     backgroundColor: '#0c0c14',
     show: false,
+    autoHideMenuBar: true,
     titleBarStyle: process.platform === 'darwin' ? 'hiddenInset' : 'default',
   });
 

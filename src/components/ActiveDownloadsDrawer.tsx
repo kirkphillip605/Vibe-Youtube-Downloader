@@ -35,13 +35,16 @@ export default function ActiveDownloadsDrawer({ open, onClose, downloads, onDism
 
   return (
     <Drawer open={open} onClose={onClose} placement="right" size="xs">
-      <Drawer.Header closeButton onClose={onClose}>
+      <Drawer.Header closeButton={false}>
         <Drawer.Title style={{ fontWeight: 700 }}>
           Active Downloads
           {active.length > 0 && (
             <Tag color="violet" size="sm" style={{ marginLeft: 8 }}>{active.length} active</Tag>
           )}
         </Drawer.Title>
+        <Drawer.Actions>
+          <IconButton icon={<CloseIcon />} appearance="subtle" onClick={onClose} />
+        </Drawer.Actions>
       </Drawer.Header>
       <Drawer.Body style={{ padding: '16px' }}>
         {downloads.length === 0 && (

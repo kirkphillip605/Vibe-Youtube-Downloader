@@ -134,30 +134,28 @@ export default function App() {
               loading={searching}
               className="navbar-search-btn"
             />
+          </Stack>
+
+          <Stack spacing={12} alignItems="center" className="navbar-actions">
             <Button
-              appearance="ghost"
+              appearance="primary"
               size="md"
               onClick={() => setUrlModalOpen(true)}
-              style={{
-                borderColor: 'var(--app-glass-border)',
-                color: 'var(--app-text-primary)'
-              }}
+              className="navbar-paste-btn"
               startIcon={<LinkIcon />}
             >
               Paste URL
             </Button>
-          </Stack>
-
-          <Stack spacing={12} alignItems="center" className="navbar-actions">
             <Badge content={activeCount > 0 ? activeCount : false} color="violet">
               <Button
                 appearance="primary"
                 size="md"
                 onClick={() => setDrawerOpen(true)}
                 className="navbar-downloads-btn"
-                title="Active Downloads"
+                title="Queue"
+                startIcon={<ArrowDownIcon />}
               >
-                Active Downloads
+                Queue
               </Button>
             </Badge>
           </Stack>
