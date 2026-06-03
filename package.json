@@ -2,7 +2,7 @@
   "name": "vibe-yt-karaoke-tool",
   "productName": "Vibe YT Karaoke Tool",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Professional YouTube Karaoke Downloader and Management Tool",
   "author": "KirkNetworks, LLC",
   "engines": {
