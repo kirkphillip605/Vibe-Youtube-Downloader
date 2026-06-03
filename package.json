@@ -63,8 +63,9 @@
     "wait-on": "^9.0.10"
   },
   "build": {
-    "appId": "com.kirknetworks.vibe",
+    "appId": "com.kirknetworks.vibeyoutubetool",
     "productName": "Vibe YT Karaoke Tool",
+    "artifactName": "${name}-${version}-${os}-${arch}.${ext}",
     "directories": {
       "output": "release"
     },
