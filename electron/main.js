@@ -8,8 +8,8 @@ import { randomUUID } from 'crypto';
 import Datastore from 'nedb-promises';
 import { autoUpdater } from 'electron-updater';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const appFilename = typeof __filename !== 'undefined' ? __filename : fileURLToPath(import.meta.url);
+const appDirname = typeof __dirname !== 'undefined' ? __dirname : path.dirname(appFilename);
 
 let mainWindow;
 
@@ -98,7 +98,7 @@ function createWindow() {
     minWidth: 900,
     minHeight: 600,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.cjs'),
+      preload: path.join(appDirname, 'preload.cjs'),
       contextIsolation: true,
       nodeIntegration: false,
     },
@@ -111,7 +111,7 @@ function createWindow() {
   if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
     mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL);
   } else {
-    mainWindow.loadFile(path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`));
+    mainWindow.loadFile(path.join(appDirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`));
   }
 
   mainWindow.once('ready-to-show', () => {
