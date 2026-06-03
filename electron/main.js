@@ -127,19 +127,46 @@ app.whenReady().then(() => {
   createWindow();
   
   // Auto Updater logic
+  autoUpdater.autoDownload = false;
   autoUpdater.checkForUpdatesAndNotify();
   
-  autoUpdater.on('update-available', (info) => {
-    mainWindow?.webContents.send('update-available', info);
+  autoUpdater.on('update-available', async (info) => {
+    if (process.platform === 'darwin') {
+      const { response } = await dialog.showMessageBox(mainWindow, {
+        type: 'info',
+        title: 'Update Available',
+        message: `A new version (${info.version}) is available.`,
+        detail: 'Since this is an unsigned build, you will need to manually download the new version from GitHub Releases.',
+        buttons: ['Open Releases Page', 'Dismiss']
+      });
+      if (response === 0) {
+        shell.openExternal('https://github.com/kirkphillip605/Vibe-Youtube-Downloader/releases/latest');
+      }
+    } else {
+      const { response } = await dialog.showMessageBox(mainWindow, {
+        type: 'info',
+        title: 'Update Available',
+        message: `A new version (${info.version}) is available. Would you like to update now or later?`,
+        buttons: ['Update Now', 'Update Later']
+      });
+      if (response === 0) {
+        autoUpdater.downloadUpdate();
+      } else {
+        mainWindow?.webContents.send('update-available', info);
+      }
+    }
   });
   
   autoUpdater.on('update-downloaded', (info) => {
     mainWindow?.webContents.send('update-downloaded', info);
-    // Optionally trigger a notification
-    new Notification({
+    dialog.showMessageBox(mainWindow, {
+      type: 'info',
       title: 'Update Ready',
-      body: `Version ${info.version} is ready to be installed.`
-    }).show();
+      message: 'The update has been downloaded. The application will restart to install the update.',
+      buttons: ['Restart']
+    }).then(() => {
+      autoUpdater.quitAndInstall();
+    });
   });
 });
 
@@ -506,4 +533,10 @@ ipcMain.handle('redownload-video', async (event, id) => {
     console.error('Redownload error:', err);
     throw err;
   }
+});
+
+// Trigger update download
+ipcMain.handle('trigger-update', async () => {
+  autoUpdater.downloadUpdate();
+  return true;
 });

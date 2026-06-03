@@ -32,6 +32,7 @@ jobs:
       - name: Build and Publish the app
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
         run: npm run build:ci
 
       - name: Upload artifacts

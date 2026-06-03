@@ -32,6 +32,8 @@ export default function App() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [urlModalOpen, setUrlModalOpen] = useState(false);
   const [setupModalOpen, setSetupModalOpen] = useState(false);
+  const [updateAvailable, setUpdateAvailable] = useState<any>(null);
+  const [updatePending, setUpdatePending] = useState(false);
 
   // Search state (lifted from SearchTab)
   const [query, setQuery] = useState('');
@@ -59,8 +61,14 @@ export default function App() {
       }
     });
 
+    const handleUpdateAvailable = (info: any) => {
+      setUpdateAvailable(info);
+    };
+    window.electron.ipcRenderer.on('update-available', handleUpdateAvailable);
+
     return () => {
       window.electron.ipcRenderer.removeAllListeners('download-progress');
+      window.electron.ipcRenderer.removeAllListeners('update-available');
     };
   }, []);
 
@@ -104,6 +112,14 @@ export default function App() {
   };
 
   const activeCount = downloads.filter(d => d.status !== 'complete' && d.status !== 'error').length;
+
+  useEffect(() => {
+    if (updatePending && activeCount === 0) {
+      window.electron.ipcRenderer.invoke('trigger-update');
+      setUpdatePending(false);
+      setUpdateAvailable(null);
+    }
+  }, [updatePending, activeCount]);
 
   return (
     <Container className="app-shell">
@@ -201,6 +217,25 @@ export default function App() {
                 </Nav.Item>
               </Nav>
             </Sidenav.Body>
+            {updateAvailable && (
+              <div style={{ padding: '20px', borderTop: '1px solid var(--app-glass-border)', marginTop: 'auto' }}>
+                <Button 
+                  appearance="primary" 
+                  color="violet" 
+                  block
+                  onClick={() => {
+                    if (activeCount === 0) {
+                      window.electron.ipcRenderer.invoke('trigger-update');
+                      setUpdateAvailable(null);
+                    } else {
+                      setUpdatePending(true);
+                    }
+                  }}
+                >
+                  {updatePending ? 'Update Pending...' : 'Update Available'}
+                </Button>
+              </div>
+            )}
           </Sidenav>
         </Sidebar>
 
